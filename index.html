@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NoticeDuty — DMCCA subscription notices (rules expected January 2027)</title>
+  <meta name="description" content="Plan every reminder, cooling-off and end-of-contract notice the UK subscription contract rules (DMCC Act 2024) require. Runs in your browser; your data stays on your device. Not legal advice." />
+  <meta name="robots" content="index,follow" />
+
+  <style>
+    :root {
+      --ink: #12202b;
+      --ink-soft: #3a4d5c;
+      --paper: #f4efe6;
+      --card: #fffdf8;
+      --line: #e2d9cc;
+      --accent: #0e6b5c;
+      --accent-2: #c45c26;
+      --warn: #b45309;
+      --danger: #9f1239;
+      --ok: #0f766e;
+      --due: #9a3412;
+      --shadow: 0 14px 40px rgba(18, 32, 43, 0.08);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+    button, input, select, textarea { font-family: inherit; }
+    button { -webkit-appearance: none; appearance: none; touch-action: manipulation; }
+    button, .btn, nav button { cursor: pointer; -webkit-tap-highlight-color: rgba(14,107,92,.25); }
+    aside {
+      background: #0f1c24;
+      color: #e8efe9;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 28px;
+    }
+    .mark {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(145deg, #1d9a82, #0b4f45);
+      display: grid; place-items: center;
+      font-family: Fraunces, Georgia, "Times New Roman", serif; font-weight: 650; color: #fff;
+    }
+    .brand h1 { font-family: Fraunces, Georgia, "Times New Roman", serif; font-size: 20px; font-weight: 650; letter-spacing: -0.02em; }
+    .brand p { font-size: 11px; color: #9bb0a8; margin-top: 2px; }
+    nav button {
+      width: 100%; text-align: left; background: transparent; border: 0;
+      color: #c9d6d0; padding: 11px 12px; border-radius: 10px;
+      cursor: pointer; font-size: 14px; font-weight: 500;
+    }
+    nav button:hover { background: rgba(255,255,255,0.06); color: #fff; }
+    nav button.active { background: #1a3a34; color: #fff; }
+    .aside-foot {
+      margin-top: auto; font-size: 11px; color: #7e938b; line-height: 1.45;
+    }
+    main { padding: 32px 40px 60px; overflow: auto; }
+    .page { display: none; max-width: 1180px; }
+    .page.active { display: block; }
+    .top {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 16px; margin-bottom: 28px;
+    }
+    h2 { font-family: Fraunces, Georgia, "Times New Roman", serif; font-size: 32px; letter-spacing: -0.03em; }
+    .muted { color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
+    .btn {
+      border: 0; border-radius: 10px; padding: 10px 16px; cursor: pointer;
+      font-weight: 600; font-size: 13.5px;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-ghost { background: #fff; border: 1px solid var(--line); color: var(--ink); }
+    .btn-warn { background: #fff4e6; color: #9a3412; border: 1px solid #f3d5b0; }
+    .btn-danger { background: #fff1f2; color: #9f1239; border: 1px solid #fecdd3; }
+    .btn-ok { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px;
+    }
+    .stat {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 18px 18px 16px; box-shadow: var(--shadow);
+    }
+    .stat .k { font-size: 12px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em; }
+    .stat .v { font-family: Fraunces, Georgia, "Times New Roman", serif; font-size: 30px; margin-top: 6px; }
+    .stat .s { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+    .panel {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th { text-align: left; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); padding: 8px 8px 10px; border-bottom: 1px solid var(--line); }
+    td { padding: 12px 8px; border-bottom: 1px solid #eee6da; vertical-align: top; }
+    tr:hover td { background: #faf7f1; }
+    .pill {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      padding: 3px 8px; border-radius: 999px;
+    }
+    .pill-due { background: #ffedd5; color: #9a3412; }
+    .pill-soon { background: #fef3c7; color: #92400e; }
+    .pill-ok { background: #d1fae5; color: #065f46; }
+    .pill-sent { background: #e0e7ff; color: #3730a3; }
+    .pill-cool { background: #ede9fe; color: #5b21b6; }
+    .pill-end { background: #e2e8f0; color: #334155; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--ink-soft); }
+    input, select, textarea {
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid var(--line); background: #fff; font-size: 14px; color: var(--ink);
+    }
+    textarea { min-height: 88px; resize: vertical; }
+    .field { margin-bottom: 12px; }
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(15,28,36,.48);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px 16px; z-index: 20; overflow: auto;
+      visibility: hidden; pointer-events: none; opacity: 0;
+    }
+    .modal-bg.open { visibility: visible; pointer-events: auto; opacity: 1; }
+    .modal {
+      background: var(--card); width: min(860px, 100%);
+      border-radius: 20px; padding: 26px; box-shadow: 0 30px 80px rgba(0,0,0,.25);
+    }
+    .notice-preview {
+      background: #fff; border: 1px solid var(--line); border-radius: 12px;
+      padding: 28px 32px; font-size: 14px; line-height: 1.55; color: #1a242b;
+    }
+    .notice-preview h3 { font-family: Fraunces, Georgia, "Times New Roman", serif; font-size: 22px; margin-bottom: 6px; }
+    .notice-preview .banner {
+      background: #12202b; color: #fff; padding: 10px 14px; border-radius: 8px;
+      font-weight: 600; margin-bottom: 18px; letter-spacing: .01em;
+    }
+    .notice-preview dt { font-weight: 600; margin-top: 12px; }
+    .notice-preview dd { margin-left: 0; }
+    .row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .law { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .law article { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+    .law h3 { font-family: Fraunces, Georgia, "Times New Roman", serif; margin-bottom: 8px; }
+    .empty { text-align: center; padding: 40px 16px; color: var(--ink-soft); }
+    @media (max-width: 960px) {
+      body { grid-template-columns: 1fr; }
+      aside { height: auto; position: relative; padding: 16px; }
+      nav { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+      main { padding: 18px 14px 80px; }
+      .top { flex-direction: column; align-items: stretch; }
+      .stats, .grid-2, .grid-3, .law { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; }
+      .btn { min-height: 44px; }
+    }
+    @media print {
+      aside, .no-print { display: none !important; }
+      body { display: block; background: #fff; }
+      main { padding: 0; }
+      .notice-preview { border: 0; }
+    }
+    .law-note { grid-column: 1 / -1; }
+    .notice-preview .check-note { margin: 4px 0 10px; padding: 6px 10px; border-left: 3px solid #b7791f; background: #fdf6e3; color: #7a4f0e; font-size: 13px; font-family: system-ui, sans-serif; }
+    @media print {
+      body:has(.modal-bg.open) main { display: none !important; }
+      .modal-bg:not(.open) { display: none !important; }
+      .modal-bg.open { position: static; background: none; padding: 0; display: block; }
+      .modal { box-shadow: none; width: 100%; padding: 0; }
+      .notice-preview .banner { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+/* ---- shared paywall / data module (injected by _build/build.js) ---- */
+.pw-banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#fff7e0;border:1px solid #f1d58a;color:#5a4300;border-radius:12px;padding:10px 14px;margin:0 0 18px;font-size:13.5px;line-height:1.45}
+.pw-banner.pw-full{background:#eef7f2;border-color:#b9dcc8;color:#18452f}
+.pw-banner.pw-expired{background:#fde8ea;border-color:#f4c4cd;color:#7a1630}
+.pw-banner b{font-weight:700}
+.pw-cta{display:inline-block;background:#1f2a44;color:#fff!important;text-decoration:none;border-radius:9px;padding:9px 14px;font-weight:600;font-size:13.5px;min-height:40px;line-height:22px;border:0;cursor:pointer}
+.pw-cta.pw-alt{background:#fff;color:#1f2a44!important;border:1px solid #c9cfdb}
+.pw-modal-bg{position:fixed;inset:0;background:rgba(15,20,30,.55);display:none;align-items:flex-start;justify-content:center;padding:40px 14px;z-index:9999;overflow:auto}
+.pw-modal-bg.open{display:flex}
+.pw-modal{background:#fffdf8;border-radius:18px;max-width:560px;width:100%;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.3);font-size:14.5px;line-height:1.5;color:#1a1a1a}
+.pw-modal h3{font-size:21px;margin:0 0 8px}
+.pw-modal ul{margin:10px 0 14px 18px}
+.pw-offers{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.pw-offer{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid #e3dccf;border-radius:12px;padding:10px 12px;background:#fff}
+.pw-offer small{display:block;color:#666;font-size:12px}
+.pw-wm{position:relative;overflow:hidden}
+.pw-wm::after{content:"DEMO \00B7  PREVIEW ONLY";position:absolute;left:-10%;top:42%;width:120%;text-align:center;transform:rotate(-24deg);font:700 54px/1 system-ui,sans-serif;letter-spacing:.08em;color:rgba(190,30,45,.16);pointer-events:none;white-space:nowrap}
+.pw-wm-tag{display:inline-block;background:#be1e2d;color:#fff;font-size:11px;font-weight:700;letter-spacing:.06em;padding:3px 8px;border-radius:6px;margin-bottom:10px}
+.pw-lock{margin:14px 0 4px;border:1px dashed #c9b68a;border-radius:12px;padding:14px;background:repeating-linear-gradient(135deg,#fbf6ea,#fbf6ea 10px,#f6efdd 10px,#f6efdd 20px);color:#5a4300;font-size:14px}
+.pw-lock .pw-bar{height:10px;border-radius:5px;background:#e7dcc1;margin:8px 0}
+.pw-data{margin-top:18px;border:1px solid #ddd4c6;border-radius:14px;padding:16px;background:#fff}
+.pw-data h3{font-size:17px;margin:0 0 6px}
+.pw-data p{font-size:13.5px;line-height:1.5;color:#4a4a4a;margin:0 0 8px}
+.pw-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pw-btn{border:1px solid #c9cfdb;background:#fff;border-radius:9px;padding:9px 14px;font-weight:600;font-size:13.5px;min-height:40px;cursor:pointer;color:#1a1a1a}
+.pw-btn.pw-danger{border-color:#f4c4cd;background:#fde8ea;color:#8b1e3f}
+.pw-disclaimer{font-size:12.5px;line-height:1.5;color:#5a5a5a;border-left:3px solid #c9b68a;padding:6px 10px;margin:12px 0;background:#fffaf0}
+.pw-licence{font-size:11px;opacity:.8;margin-top:10px}
+@media print{.pw-banner,.pw-modal-bg,.pw-data,.pw-noprint{display:none!important}.pw-wm::after{color:rgba(190,30,45,.22)}}
+.pw-placeholder{background:#fff3c4;color:#5a4500;padding:0 4px;border-radius:3px;font-family:ui-monospace,Menlo,Consolas,monospace}
+
+  </style>
+</head>
+<body>
+  <aside>
+    <div class="brand">
+      <div class="mark">N</div>
+      <div>
+        <h1>NoticeDuty</h1>
+        <p>DMCCA subscription engine</p>
+      </div>
+    </div>
+    <nav>
+      <button type="button" class="active" data-page="dash">Dashboard</button>
+      <button type="button" data-page="customers">Customers</button>
+      <button type="button" data-page="queue">Notice queue</button>
+      <button type="button" data-page="sent">Sent log</button>
+      <button type="button" data-page="settings">Business settings</button>
+      <button type="button" data-page="law">What the law requires</button>
+    </nav>
+    <div class="aside-foot">
+      Built for the UK subscription contracts regime (DMCC Act 2024, Part 4 Chapter 2). Expected from January 2027 (government announcement, 9 Aug 2026). Not yet in force: the exact day and the regulations are not published (checked 4 Oct 2026). Not legal advice.
+      <p style="margin-top:10px"><a href="https://besttechguides.github.io/" style="color:#c9d6d0">More tools from UK Admin Tools</a></p>
+    </div>
+  </aside>
+
+  <main>
+    <section id="dash" class="page active">
+      <div class="top">
+        <div>
+          <h2>Today’s compliance picture</h2>
+          <p class="muted">Once the rules are in force (expected from January 2027), a missed notice can let the customer cancel, and regulations are expected to set the refunds that follow. This board shows what is due next.</p>
+        </div>
+        <div class="row-actions no-print">
+          <button type="button" class="btn btn-ghost" id="seedBtn">Load sample book</button>
+          <button type="button" class="btn btn-primary" id="addFromDash">Add customer</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="k">Active subscriptions</div><div class="v" id="statCustomers">0</div><div class="s">on this device</div></div>
+        <div class="stat"><div class="k">Due in 7 days</div><div class="v" id="statDue">0</div><div class="s">must go out this week</div></div>
+        <div class="stat"><div class="k">Due in 30 days</div><div class="v" id="statSoon">0</div><div class="s">in the planning window</div></div>
+        <div class="stat"><div class="k">Notices sent</div><div class="v" id="statSent">0</div><div class="s">audit trail kept locally</div></div>
+      </div>
+      <div class="panel">
+        <h3 style="font-family:Fraunces,serif;margin-bottom:12px;">Next obligations</h3>
+        <div id="dashQueue"></div>
+      </div>
+    </section>
+
+    <section id="customers" class="page">
+      <div class="top">
+        <div>
+          <h2>Customer book</h2>
+          <p class="muted">Enter the subscription once. NoticeDuty calculates reminder, cooling-off and cancellation notices from the dates and amounts.</p>
+        </div>
+        <div class="row-actions">
+          <button type="button" class="btn btn-ghost" data-pw-unlock="1">Export CSV (full version)</button>
+
+          <label class="btn btn-ghost" style="margin:0">Import CSV<input type="file" id="importCsv" accept=".csv,text/csv" style="display:none"></label>
+          <button type="button" class="btn btn-primary" id="addCustomerBtn">Add customer</button>
+        </div>
+      </div>
+      <p class="muted no-print" style="margin:-4px 0 10px">Import CSV: one row per subscription. Columns (header row required): <code>name, start, freq, amount</code>, plus optional <code>email, phone, product, address, prev, trial, min, notice, lead, status, channel</code>. Dates as YYYY-MM-DD or DD/MM/YYYY; freq is week, month, quarter or year. A file exported from NoticeDuty imports as-is.</p>
+      <div class="panel" id="customerTableWrap"></div>
+    </section>
+
+    <section id="queue" class="page">
+      <div class="top">
+        <div>
+          <h2>Notice queue</h2>
+          <p class="muted">The reminder and cooling-off notices the Act will require once in force (expected from January 2027), dated from your settings. Send them in writing, ideally by email or letter, which are normally a “durable medium”. Planned regulations are expected to require a durable medium for reminders.</p>
+        </div>
+      </div>
+      <div class="panel" id="queueTableWrap"></div>
+    </section>
+
+    <section id="sent" class="page">
+      <div class="top">
+        <div>
+          <h2>Sent log</h2>
+          <p class="muted">Proof of sending. Keep this. If a customer claims they were never reminded, this is the record you show.</p>
+        </div>
+        <button type="button" class="btn btn-ghost" id="clearLog">Clear log</button>
+      </div>
+      <div class="panel" id="sentTableWrap"></div>
+    </section>
+
+    <section id="settings" class="page">
+      <div class="top">
+        <div>
+          <h2>Business settings</h2>
+          <p class="muted">Used on every notice. The reminder period must match the period you told customers in your key pre-contract information (s.259(3) and Sch 23 para 10). It counts back from the last cancellation date, not from the payment date.</p>
+        </div>
+      </div>
+      <div class="panel" style="max-width:720px">
+        <div class="grid-2">
+          <div class="field"><label>Trading name</label><input id="bizName" /></div>
+          <div class="field"><label>Legal entity</label><input id="bizLegal" /></div>
+        </div>
+        <div class="field"><label>Address</label><textarea id="bizAddress"></textarea></div>
+        <div class="grid-2">
+          <div class="field"><label>Cancellation email</label><input id="bizEmail" /></div>
+          <div class="field"><label>Cancellation phone</label><input id="bizPhone" /></div>
+        </div>
+        <div class="field"><label>Online cancellation URL (required if customers can sign up online)</label><input id="bizCancelUrl" placeholder="https://yoursite.com/cancel" /></div>
+        <div class="grid-3">
+          <div class="field"><label>Reminder period: days before the last cancellation date</label><input id="bizLead" type="number" min="1" max="90" /></div>
+          <div class="field"><label>Customer's contractual cancellation notice (days)</label><input id="bizNotice" type="number" min="0" max="90" /></div>
+          <div class="field"><label>Channel</label>
+            <select id="bizChannel">
+              <option value="email">Email</option>
+              <option value="letter">Letter</option>
+              <option value="whatsapp">WhatsApp</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Additional reminder for annual plans: days before the main reminder</label><input id="bizExtra" type="number" min="1" max="120" /></div>
+        <p class="muted" style="margin-bottom:12px">For plans where the next payment is more than 12 months away, the Act requires an additional, earlier reminder at a “reasonable” time (s.259(6)–(8)). The Act sets no number of days. 30 is our default, not a legal rule.</p>
+        <button type="button" class="btn btn-primary" id="saveBiz">Save settings</button>
+        <p class="muted" style="margin-top:10px" id="bizSaved"></p>
+      </div>
+      <div id="pwData" style="max-width:720px"></div>
+    </section>
+
+    <section id="law" class="page">
+      <div class="top">
+        <div>
+          <h2>What the rules require (expected from January 2027)</h2>
+          <p class="muted">Digital Markets, Competition and Consumers Act 2024, Part 4 Chapter 2. Not yet in force. Regulations and guidance still to be published will fill in some detail and may change timings.</p>
+        </div>
+      </div>
+      <div class="law">
+        <article>
+          <h3>Reminder notices</h3>
+          <p class="muted">A reminder before the renewal payment that closes each six-month period (the first period starts the day after sign-up). With a free or discounted trial, the first reminder is before the first full payment (s.258). If the next payment is more than 12 months away (annual plans), you must also send an <strong>additional</strong> earlier reminder (s.259(6)–(8)). You send the reminder within the period you stated in your key pre-contract information, counted back from the last cancellation date (s.259(3)–(5)). The required information must be more prominent than anything else in the message, and the contents are set by Schedule 23 Part 3. Planned regulations are expected to add durable-medium and “purpose immediately apparent” rules.</p>
+        </article>
+        <article>
+          <h3>Cooling-off notices</h3>
+          <p class="muted">There is a 14-day initial cooling-off period from sign-up (s.264–265). There is a new 14-day renewal cooling-off period when a free or discounted trial turns into a paid one, and when a renewal payment means the next payment is more than 12 months away (s.265(3)). For each renewal cooling-off period, send a cooling-off notice on its first day, or as soon as reasonably practicable after that, and separately from any other information (s.266). Refunds on cooling-off cancellation are left to regulations (s.267).</p>
+        </article>
+        <article>
+          <h3>Cancellation / end-of-contract</h3>
+          <p class="muted">Exit must be straightforward. If customers signed up online, they must be able to cancel online (s.260). When they cancel, send an end-of-contract notice in writing on a durable medium that confirms the end date. Send it within 24 hours if they cancelled online, or within 3 working days otherwise, unless regulations set a different period (s.261(4)–(5)). Refund any overpayment. Regulations are expected to set the refund deadline (14 days was proposed).</p>
+        </article>
+        <article>
+          <h3>If you miss one</h3>
+          <p class="muted">Sending the required reminders and having proper exit arrangements are implied terms of the contract (s.262). If you breach them, the customer can cancel (s.263). The refunds that follow are set by regulations that are not yet made. You have to prove that you sent a notice (s.272). The CMA can also fine businesses directly for consumer law breaches, up to 10% of global turnover (DMCC Act 2024 Part 3, in force since 6 April 2025). The 2023 impact assessment estimated about 236,000 UK businesses offer in-scope subscriptions.</p>
+        </article>
+        <article class="law-note">
+          <h3>What is not final yet</h3>
+          <p class="muted">Most of Chapter 2 is shown on legislation.gov.uk as prospective (not yet in force). The government announced on 9 August 2026 that the rules will start in January 2027, so they are expected from January 2027, but no day has been fixed in law. No commencement regulations, subscription contract regulations or draft regulations had been published when we checked on 4 October 2026. The regulations are expected to cover the durable medium, refund deadlines, cooling-off refunds and easy-exit detail, and they may change these timings. NoticeDuty applies the wording of the Act and marks the open points. Check GOV.UK and legislation.gov.uk before you rely on a date.</p>
+          <p class="muted" style="margin-top:8px"><strong>Not legal advice.</strong> NoticeDuty is a planning and record-keeping tool. It does not make your business compliant, and the notice templates may need changing for your contracts. For your own situation, take advice from a qualified adviser.</p>
+          <p class="muted" style="margin-top:8px">Sources: DMCC Act 2024 ss.254–281 and Schedules 22–23 (legislation.gov.uk); DBT government response, 2 April 2026; GOV.UK press release, 9 August 2026. Law checked 4 October 2026.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-bg" id="customerModal">
+    <div class="modal">
+      <div class="top"><h2 id="custModalTitle">Add customer</h2><button type="button" class="btn btn-ghost" id="closeCust">Close</button></div>
+      <form id="custForm">
+        <input type="hidden" id="custId" />
+        <div class="grid-2">
+          <div class="field"><label>Full name</label><input id="cName" required /></div>
+          <div class="field"><label>Email</label><input id="cEmail" type="email" required /></div>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>Phone</label><input id="cPhone" /></div>
+          <div class="field"><label>Product / plan</label><input id="cProduct" required placeholder="Annual gym membership" /></div>
+        </div>
+        <div class="field"><label>Postal address</label><textarea id="cAddress"></textarea></div>
+        <div class="grid-3">
+          <div class="field"><label>Contract start</label><input id="cStart" type="date" required /></div>
+          <div class="field"><label>Billing</label>
+            <select id="cFreq">
+              <option value="month">Monthly</option>
+              <option value="quarter">Quarterly</option>
+              <option value="year">Annually</option>
+              <option value="week">Weekly</option>
+            </select>
+          </div>
+          <div class="field"><label>Current amount (£)</label><input id="cAmount" type="number" step="0.01" min="0" required /></div>
+        </div>
+        <div class="grid-3">
+          <div class="field"><label>Previous amount (£)</label><input id="cPrev" type="number" step="0.01" min="0" placeholder="if price rose" /></div>
+          <div class="field"><label>Trial / concession ends</label><input id="cTrial" type="date" /></div>
+          <div class="field"><label>Minimum term (months)</label><input id="cMin" type="number" min="0" value="0" /></div>
+        </div>
+        <div class="grid-3">
+          <div class="field"><label>Customer cancel notice (days)</label><input id="cNotice" type="number" min="0" /></div>
+          <div class="field"><label>Reminder lead (days)</label><input id="cLead" type="number" min="7" /></div>
+          <div class="field"><label>Status</label>
+            <select id="cStatus">
+              <option value="active">Active</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="paused">Paused</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>How they signed up</label>
+          <select id="cChannel">
+            <option value="online">Online</option>
+            <option value="phone">Phone</option>
+            <option value="in-person">In person</option>
+          </select>
+        </div>
+        <div class="row-actions">
+          <button class="btn btn-primary" type="submit">Save customer</button>
+          <button class="btn btn-danger" type="button" id="deleteCust" style="display:none">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="noticeModal">
+    <div class="modal" style="width:min(820px,100%)">
+      <div class="top no-print">
+        <h2 id="noticeTitle">Notice</h2>
+        <div class="row-actions">
+          <button type="button" class="btn btn-primary" data-pw-unlock="1">Unlock to copy &amp; print</button>
+
+          <button type="button" class="btn btn-ok" id="markSent">Mark as sent</button>
+          <button type="button" class="btn btn-ghost" id="closeNotice">Close</button>
+        </div>
+      </div>
+      <p class="muted no-print" id="noticeHint" style="margin-bottom:10px"></p>
+      <div class="notice-preview" id="noticeBody"></div>
+    </div>
+  </div>
+
+  <script>
+var BUILD = {"app":"noticeduty","title":"NoticeDuty","version":"1.1.0","schema":1,"built":"2026-10-04","edition":"demo","tier":"demo","tierName":"Free demo","limits":{"customers":30},"features":{},"renewBy":null,"demoNote":"Up to 30 customers. Dates, reminders and cooling-off windows are shown in full; notice wording is a preview.","fullNote":"","unlockPitch":"Track your whole subscriber book, get the complete statutory notice wording, copy or print clean notices, and export CSV.","privacyExtra":"Your customers' names and contact details are personal data. You are the controller of that data under UK GDPR. Keep this device secure and delete records you no longer need.","seller":{"name":"Best Tech Guides","email":"lemondogs@yahoo.co.uk","legal":"Andrew Ellis","address":"11 Laneside Avenue, Toton, Nottingham NG9 6LW","trader":"Best Tech Guides is a trading name of Andrew Ellis, 11 Laneside Avenue, Toton, Nottingham NG9 6LW"},"offers":[{"key":"STARTER","urlKey":"PAYHIP_URL_NOTICEDUTY_STARTER","name":"NoticeDuty Starter","price":"£10 / month (or £100 / year)","blurb":"Up to 1,000 active subscriptions. Full notice wording, copy and print, CSV import and export, sent log.","url":"PAYHIP_URL_NOTICEDUTY_STARTER"},{"key":"GROWTH","urlKey":"PAYHIP_URL_NOTICEDUTY_GROWTH","name":"NoticeDuty Growth","price":"£19 / month (or £190 / year)","blurb":"Up to 5,000 active subscriptions. Everything in Starter.","url":"PAYHIP_URL_NOTICEDUTY_GROWTH"},{"key":"SCALE","urlKey":"PAYHIP_URL_NOTICEDUTY_SCALE","name":"NoticeDuty Scale","price":"£35 / month (or £350 / year)","blurb":"Up to 10,000 active subscriptions. Everything in Starter.","url":"PAYHIP_URL_NOTICEDUTY_SCALE"}],"upgrades":[]};
+/* ---- shared paywall / data module (injected by _build/build.js). ES5 on purpose. ---- */
+var PW = (function () {
+  var B = BUILD;
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]; }); }
+  function todayIso() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  var isDemo = B.edition === "demo";
+  var seller = B.seller || { name: "", email: "", trader: "" };
+  function contactHtml() {
+    return seller.email.indexOf("@") > 0 ? "<a href=\"mailto:" + esc(seller.email) + "\">" + esc(seller.email) + "</a>" : "<span class=\"pw-placeholder\">" + esc(seller.email) + "</span>";
+  }
+  var expired = !!(B.renewBy && todayIso() > B.renewBy);
+
+  function limit(name) { var v = B.limits[name]; return (v == null || v < 0) ? Infinity : v; }
+  function feature(name) { return !!B.features[name]; }
+
+  /* A store link that has not been filled in yet still starts with PAYHIP_URL_ */
+  function linkReady(url) { return !!url && url.indexOf("PAYHIP_URL_") !== 0 && url.indexOf("http") === 0; }
+  function offerHtml(o) {
+    return "<div class=\"pw-offer\"><div><b>" + esc(o.name) + "</b> \u2014 " + esc(o.price) + "<small>" + esc(o.blurb) + "</small></div>" +
+      "<a class=\"pw-cta\" target=\"_blank\" rel=\"noopener\" data-pw-href=\"1\" href=\"" + esc(o.url) + "\">" + (o.cta || "Buy on Payhip") + "</a></div>";
+  }
+  var bg = null;
+  function modal(title, bodyHtml, offers) {
+    if (!bg) {
+      bg = el("div", "pw-modal-bg"); bg.id = "pwModal";
+      bg.addEventListener("click", function (e) { if (e.target === bg || e.target.getAttribute("data-pw-close")) bg.classList.remove("open"); });
+      document.body.appendChild(bg);
+    }
+    var list = (offers || B.offers || []).map(offerHtml).join("");
+    bg.innerHTML = "<div class=\"pw-modal\" role=\"dialog\" aria-modal=\"true\"><h3>" + esc(title) + "</h3>" + bodyHtml +
+      (list ? "<div class=\"pw-offers\">" + list + "</div>" : "") +
+      "<div class=\"pw-row\"><button type=\"button\" class=\"pw-btn\" data-pw-close=\"1\" id=\"pwClose\">Not now</button></div>" +
+      "<p class=\"pw-licence\" id=\"pwModalSeller\">Seller: " + esc(seller.trader) + ". No VAT is added: " + esc(seller.name) + " is not VAT registered, so the price you see is the total you pay. Payment and delivery are handled by Payhip, which deals with any UK or EU digital VAT within that price. This app never sees your card details. Your data stays in this browser. Questions: " + contactHtml() + ".</p></div>";
+    bg.classList.add("open");
+  }
+  function upsell(reason) {
+    var msg = isDemo
+      ? "<p>" + esc(reason) + "</p><p>The free demo shows you the dates and the gaps. The full version removes the limits, prints clean documents without the watermark, and includes the complete wording.</p>"
+      : "<p>" + esc(reason) + "</p><p>Your current plan is <b>" + esc(B.tierName) + "</b>. A larger plan raises the limit. Your data stays where it is: export a backup here and import it into the new file.</p>";
+    modal(isDemo ? "Unlock the full version" : "You have reached your plan limit", msg, isDemo ? B.offers : (B.upgrades || B.offers));
+  }
+  /* Check a count limit before adding. Returns true if allowed. */
+  function gate(name, currentCount, what) {
+    if (expired) { modal("Membership copy expired", "<p>This copy was issued for a membership period ending " + esc(B.renewBy) + ". Download the current file from your Payhip membership page. Your data is still here and you can still export it.</p>", []); return false; }
+    var max = limit(name);
+    if (currentCount >= max) { upsell((isDemo ? "The free demo is limited to " : "This plan is limited to ") + max + " " + what + "."); return false; }
+    return true;
+  }
+  function locked(label) {
+    return "<div class=\"pw-lock pw-noprint\"><b>" + esc(label || "The rest of this document is in the full version.") + "</b>" +
+      "<div class=\"pw-bar\" style=\"width:92%\"></div><div class=\"pw-bar\" style=\"width:78%\"></div><div class=\"pw-bar\" style=\"width:85%\"></div>" +
+      "<button type=\"button\" class=\"pw-cta\" data-pw-unlock=\"1\">Unlock full version</button></div>";
+  }
+  function watermark(html) { return "<div class=\"pw-wm\"><span class=\"pw-wm-tag\">DEMO \u00B7 PREVIEW \u2014 NOT FOR USE</span>" + html + "</div>"; }
+
+  /* ---- backup / restore / wipe: everything stays in localStorage on this device ---- */
+  function download(name, text, type) {
+    var blob = new Blob([text], { type: type || "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    PW.lastDownload = { name: name, size: text.length, text: text };
+  }
+  function exportBackup(data) {
+    var payload = { app: B.app, schema: B.schema, exportedAt: new Date().toISOString(), edition: B.edition, tier: B.tier, data: data };
+    download(B.app + "-backup-" + todayIso() + ".json", JSON.stringify(payload, null, 2));
+  }
+  function parseBackup(text) {
+    var obj = JSON.parse(text);
+    if (!obj || obj.app !== B.app || !obj.data) throw new Error("This is not a " + B.title + " backup file.");
+    return obj.data;
+  }
+  function importBackupFile(file, apply) {
+    var r = new FileReader();
+    r.onload = function () {
+      try { var msg = apply(parseBackup(String(r.result))); alert(msg || "Backup imported."); }
+      catch (e) { alert("Import failed: " + e.message); }
+    };
+    r.readAsText(file);
+  }
+  /* Renders the privacy + backup panel into a container. opts: {get, apply, wipe, extra} */
+  function dataPanel(container, opts) {
+    if (!container) return;
+    container.innerHTML = "<div class=\"pw-data\"><h3>Your data stays on this device</h3>" +
+      "<p>" + esc(B.title) + " has no server and no account. Everything you type is saved only in this browser's local storage (<code>localStorage</code>) on this device. Nothing is sent to us or to anyone else. The page makes no network requests after it loads.</p>" +
+      "<p>" + (B.privacyExtra || "") + "</p>" +
+      "<p>Clearing your browser data deletes it, and another browser or computer will not see it. <b>Export a backup regularly</b> and keep it somewhere safe. To move to a new version or a bigger plan, export here and import into the new file.</p>" +
+      "<div class=\"pw-row\"><button type=\"button\" class=\"pw-btn\" id=\"pwExport\">Export backup (.json)</button>" +
+      "<label class=\"pw-btn\" style=\"display:inline-block;margin:0\">Import backup<input type=\"file\" id=\"pwImport\" accept=\".json,application/json\" style=\"display:none\"></label>" +
+      "<button type=\"button\" class=\"pw-btn pw-danger\" id=\"pwWipe\">Delete all data on this device</button></div>" +
+      "<p class=\"pw-licence\">" + esc(B.title) + " " + esc(B.version) + " \u00B7 " + (isDemo ? "free demo" : esc(B.tierName) + " \u00B7 licensed copy: do not upload this file to a public website") + " \u00B7 built " + esc(B.built) + "</p>" +
+      "<p class=\"pw-licence\" id=\"pwSeller\">Sold by " + esc(seller.name) + " \u00B7 support: " + contactHtml() + " \u00B7 not VAT registered, no VAT added to the price</p>" +
+      "<p class=\"pw-licence\" id=\"pwTrader\">" + esc(seller.trader) + ". Email: " + contactHtml() + "</p></div>";
+    container.querySelector("#pwExport").onclick = function () { exportBackup(opts.get()); };
+    container.querySelector("#pwImport").onchange = function (e) { var f = e.target.files[0]; if (f) importBackupFile(f, opts.apply); e.target.value = ""; };
+    container.querySelector("#pwWipe").onclick = function () {
+      if (!confirm("Delete everything " + B.title + " has stored in this browser? Export a backup first if you might need it.")) return;
+      opts.wipe(); alert("Deleted from this device.");
+    };
+  }
+  function banner(container) {
+    if (!container) return;
+    var b;
+    if (expired) {
+      b = el("div", "pw-banner pw-expired", "<div><b>Membership copy expired " + esc(B.renewBy) + ".</b> Download the current file from your Payhip membership page. Export still works.</div>");
+    } else if (isDemo) {
+      b = el("div", "pw-banner", "<div><b>Free demo.</b> " + esc(B.demoNote) + " Documents are watermarked previews.</div>" +
+        "<button type=\"button\" class=\"pw-cta\" data-pw-unlock=\"1\" id=\"pwUnlockTop\">Unlock full version</button>");
+    } else {
+      b = el("div", "pw-banner pw-full", "<div><b>" + esc(B.tierName) + "</b> \u00B7 " + esc(B.fullNote) + "</div>");
+    }
+    container.insertBefore(b, container.firstChild);
+  }
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest ? e.target.closest("[data-pw-unlock],[data-pw-href]") : null;
+    if (!t) return;
+    if (t.hasAttribute("data-pw-unlock")) { e.preventDefault(); modal("Unlock the full version", "<p>" + esc(B.unlockPitch) + "</p>", B.offers); return; }
+    if (t.hasAttribute("data-pw-href") && !linkReady(t.getAttribute("href"))) {
+      e.preventDefault();
+      alert("The store link is not set up yet (" + t.getAttribute("href") + ").");
+    }
+  });
+  return { B: B, seller: seller, isDemo: isDemo, expired: expired, limit: limit, feature: feature, gate: gate, upsell: upsell, modal: modal,
+    locked: locked, watermark: watermark, dataPanel: dataPanel, banner: banner, download: download, exportBackup: exportBackup,
+    parseBackup: parseBackup, esc: esc, todayIso: todayIso, linkReady: linkReady, lastDownload: null };
+})();
+
+    const KEY = "noticeduty.v1";
+    const isoLocal = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    const today = () => isoLocal(new Date());
+    const uid = () => Math.random().toString(36).slice(2,10) + Date.now().toString(36).slice(-4);
+    const money = n => "£" + Number(n || 0).toFixed(2);
+    const fmt = iso => {
+      if (!iso) return "—";
+      const d = new Date(iso + "T00:00:00");
+      return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+    };
+    const addDays = (iso, n) => {
+      const d = new Date(iso + "T00:00:00");
+      d.setDate(d.getDate() + n);
+      return isoLocal(d);
+    };
+    const addMonths = (iso, n) => {
+      const d = new Date(iso + "T00:00:00");
+      const day = d.getDate();
+      d.setDate(1);
+      d.setMonth(d.getMonth() + n);
+      const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+      d.setDate(Math.min(day, last));
+      return isoLocal(d);
+    };
+    const daysBetween = (a, b) => Math.round((new Date(b+"T00:00:00") - new Date(a+"T00:00:00")) / 86400000);
+    const num = (v, fallback) => (v === 0 || (v !== "" && v != null && !isNaN(Number(v)))) ? Number(v) : fallback;
+
+    const defaultBiz = {
+      name: "Northbridge Leisure Ltd",
+      legal: "Northbridge Leisure Ltd, company no. 01234567",
+      address: "14 Quay Street\nManchester\nM2 3AE",
+      email: "cancel@northbridge.example",
+      phone: "0161 555 0199",
+      cancelUrl: "https://northbridge.example/account/cancel",
+      lead: 21,
+      notice: 14,
+      extra: 30,
+      channel: "email"
+    };
+
+    function blank() { return { biz: { ...defaultBiz }, customers: [], sent: [] }; }
+    function normalise(s) {
+      s = s && typeof s === "object" ? s : blank();
+      s.biz = { ...defaultBiz, ...(s.biz || {}) };
+      s.customers = Array.isArray(s.customers) ? s.customers : [];
+      s.sent = Array.isArray(s.sent) ? s.sent : [];
+      return s;
+    }
+    function load() {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return blank();
+      try { return normalise(JSON.parse(raw)); } catch { return blank(); }
+    }
+    /* lookup caches: rebuilt lazily, cleared whenever data is saved (keeps large books fast) */
+    let _byId = null, _sentIds = null, _obs = null;
+    function resetCaches() { _byId = null; _sentIds = null; _obs = null; }
+    function save(state) { resetCaches(); try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { alert("This browser\u2019s storage for local files is full, so your last change was NOT saved. Use \u201cExport backup (.json)\u201d under \u201cYour data stays on this device\u201d now, then remove old records or other saved local pages."); } }
+    let state = load();
+
+    /* ---- plan limits (demo: 1 customer; paid: active subscriptions) ---- */
+    const countForLimit = list => PW.isDemo ? list.length : list.filter(c => c.status === "active").length;
+    function enforceLimit(s) {
+      const max = PW.limit("customers");
+      let kept = 0, dropped = 0;
+      s.customers = s.customers.filter(c => {
+        const counts = PW.isDemo || c.status === "active";
+        if (!counts) return true;
+        if (kept < max) { kept++; return true; }
+        dropped++; return false;
+      });
+      return dropped;
+    }
+
+    function freqStep(freq) {
+      return { week: [0,7], month: [1,0], quarter: [3,0], year: [12,0] }[freq] || [1,0];
+    }
+    function paymentAt(anchor, freq, i) {
+      const [m, days] = freqStep(freq);
+      return m ? addMonths(anchor, m * i) : addDays(anchor, days * i);
+    }
+    function noticeDaysFor(c, biz) { return num(c.notice, num(biz.notice, 0)); }
+
+    /* Statutory notices for one subscription, following DMCC Act 2024 ss.258, 259 and 265.
+       - Renewal payments: with a trial/concession, the first full payment (trial end date) and every
+         payment after it; without one, every payment after the sign-up payment.
+       - Reminder: the renewal payment that relates to the end of each relevant six-month period (s.258(5)).
+       - Additional reminder: where the next payment is more than 12 months away (s.259(6)-(8)).
+       - Renewal cooling-off notice: first payment after a concessionary period, and payments where the
+         next payment is more than 12 months away (s.265(3)), sent on day one (s.266(3)). */
+    function obligationsFor(c, biz) {
+      if (c.status !== "active") return [];
+      const lead = num(c.lead, num(biz.lead, 21));
+      const noticeDays = noticeDaysFor(c, biz);
+      const extraGap = num(biz.extra, 30);
+      const items = [];
+      const from = today();
+      const hasTrial = !!(c.trial && c.trial > c.start);
+      const anchor = hasTrial ? c.trial : c.start;
+      const horizon = addMonths(from, 18);
+      const lookback = addDays(from, -45);
+
+      const payments = [];
+      for (let i = hasTrial ? 0 : 1; i < 1200; i++) {
+        const p = paymentAt(anchor, c.freq, i);
+        if (p > horizon) break;
+        payments.push(p);
+      }
+      const nextAfter = p => paymentAt(p, c.freq, 1);
+      const over12 = p => nextAfter(p) > addDays(addMonths(addDays(p, -1), 12), -1);
+
+      const reminded = [];
+      let windowStart;
+      if (hasTrial && payments.length) {
+        reminded.push({ p: payments[0], reason: "trial-convert" });
+        windowStart = addDays(payments[0], 1);
+      } else {
+        windowStart = addDays(c.start, 1);
+      }
+      for (let guard = 0; guard < 400; guard++) {
+        const windowEnd = addMonths(windowStart, 6);
+        const inWindow = payments.filter(p => p >= windowStart && p < windowEnd);
+        const target = inWindow.length ? inWindow[inWindow.length - 1] : payments.find(p => p >= windowEnd);
+        if (!target) break;
+        if (!reminded.some(r => r.p === target)) reminded.push({ p: target, reason: "six-month" });
+        windowStart = addDays(target, 1);
+      }
+
+      reminded.forEach(r => {
+        const lastCancel = addDays(r.p, -Math.max(noticeDays, 1));
+        const sendOn = addDays(lastCancel, -lead);
+        const key = "reminder:" + c.id + ":" + r.p;
+        items.push({ id: key, customerId: c.id, type: "reminder", due: sendOn, related: r.p, lastCancel, reason: r.reason,
+          status: alreadySent(key) ? "sent" : (sendOn < from ? "overdue" : "upcoming") });
+        if (over12(r.p)) {
+          const k2 = "extra:" + c.id + ":" + r.p;
+          const due2 = addDays(sendOn, -extraGap);
+          items.push({ id: k2, customerId: c.id, type: "extra-reminder", due: due2, related: r.p, lastCancel, reason: "12-month",
+            status: alreadySent(k2) ? "sent" : (due2 < from ? "overdue" : "upcoming") });
+        }
+      });
+
+      payments.forEach((p, idx) => {
+        const isTrialConvert = hasTrial && idx === 0;
+        if (isTrialConvert || over12(p)) {
+          const key = "cooling:" + c.id + ":" + p;
+          items.push({ id: key, customerId: c.id, type: "cooling-off", due: p, related: p, windowEnd: addDays(p, 14),
+            reason: isTrialConvert ? "trial-convert" : "12-month-renewal",
+            status: alreadySent(key) ? "sent" : (p < from ? "overdue" : "upcoming") });
+        }
+      });
+
+      return items
+        .filter(it => it.due >= lookback && it.due <= horizon)
+        .sort((x,y) => x.due.localeCompare(y.due));
+    }
+
+    function alreadySent(id) {
+      if (!_sentIds) _sentIds = new Set(state.sent.map(s => s.noticeId));
+      return _sentIds.has(id);
+    }
+
+    function allObligations() {
+      if (!_obs) _obs = state.customers.flatMap(c => obligationsFor(c, state.biz));
+      return _obs;
+    }
+
+    function customerById(id) {
+      if (!_byId) { _byId = new Map(); state.customers.forEach(c => _byId.set(c.id, c)); }
+      return _byId.get(id);
+    }
+    /* tables show at most this many rows; the counts, CSV export and backups always cover everything */
+    const ROW_CAP = 500;
+    function capNote(shown, total, what) {
+      return total > shown ? `<p class="muted" style="margin-top:8px">Showing the first ${shown} of ${total} ${what}. ${PW.isDemo ? "" : "Use Export CSV for the full list."}</p>` : "";
+    }
+
+    function noticeContext(item) {
+      const c = customerById(item.customerId);
+      const b = state.biz;
+      const amount = Number(c.amount);
+      const prev = c.prev !== "" && c.prev != null && Number(c.prev) > 0 ? Number(c.prev) : null;
+      const nextAfter = paymentAt(item.related, c.freq, 1);
+      const freqLabel = { week: "weekly", month: "monthly", quarter: "quarterly", year: "annually" }[c.freq];
+      const cancelHow = [
+        c.channel === "online" && b.cancelUrl ? `Cancel online at ${b.cancelUrl}` : null,
+        `Email ${b.email}`,
+        b.phone ? `Telephone ${b.phone}` : null,
+        `Write to ${b.legal}, ${String(b.address || "").replace(/\n/g, ", ")}`
+      ].filter(Boolean);
+      return { c, b, amount, prev, nextAfter, freqLabel, cancelHow, noticeDays: noticeDaysFor(c, b) };
+    }
+
+
+
+    /* Demo: shows the dates the checker works out. The statutory wording is only in the paid file. */
+    function buildNotice(item) {
+      const { c, amount, noticeDays } = noticeContext(item);
+      const titles = { "reminder": "Reminder notice", "extra-reminder": "Additional reminder notice", "cooling-off": "Cooling-off notice", "end": "End of contract notice" };
+      let rows = `<dt>Customer</dt><dd>${escapeHtml(c.name)}: ${escapeHtml(c.product)}</dd>`;
+      if (item.type === "reminder" || item.type === "extra-reminder") {
+        rows += `<dt>Send by</dt><dd>${fmt(item.due)}</dd><dt>Renewal date</dt><dd>${fmt(item.related)}</dd><dt>Renewal payment</dt><dd>${money(amount)}</dd><dt>Last cancellation date</dt><dd>${fmt(item.lastCancel)}${noticeDays ? " (" + noticeDays + "-day notice period)" : ""}</dd>`;
+      } else if (item.type === "cooling-off") {
+        rows += `<dt>Send on</dt><dd>${fmt(item.due)}</dd><dt>Cooling-off window</dt><dd>${fmt(item.related)} to ${fmt(item.windowEnd)}</dd>`;
+      } else {
+        rows += `<dt>Contract end date</dt><dd>${fmt(item.related)}</dd><dt>Send within</dt><dd>24 hours (online cancellation) or 3 working days (other ways)</dd>`;
+      }
+      return {
+        title: titles[item.type] || "Notice",
+        html: PW.watermark(`<div class="banner">${escapeHtml((titles[item.type] || "Notice").toUpperCase())}: PREVIEW</div>${rows}`) +
+          PW.locked("The full statutory notice wording (all the Schedule 23 information, ready to copy or print) is in the paid version.")
+      };
+    }
+
+
+    function escapeHtml(s) {
+      return String(s || "").replace(/[&<>"']/g, ch => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+      }[ch]));
+    }
+
+    /* navigation */
+    document.querySelectorAll("nav button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.page).classList.add("active");
+        render();
+      });
+    });
+
+    function render() {
+      resetCaches();
+      document.getElementById("bizName").value = state.biz.name || "";
+      document.getElementById("bizLegal").value = state.biz.legal || "";
+      document.getElementById("bizAddress").value = state.biz.address || "";
+      document.getElementById("bizEmail").value = state.biz.email || "";
+      document.getElementById("bizPhone").value = state.biz.phone || "";
+      document.getElementById("bizCancelUrl").value = state.biz.cancelUrl || "";
+      document.getElementById("bizLead").value = num(state.biz.lead, 21);
+      document.getElementById("bizNotice").value = num(state.biz.notice, 14);
+      document.getElementById("bizExtra").value = num(state.biz.extra, 30);
+      document.getElementById("bizChannel").value = state.biz.channel || "email";
+
+      const obs = allObligations().filter(o => o.status !== "sent");
+      const due7 = obs.filter(o => daysBetween(today(), o.due) <= 7);
+      const due30 = obs.filter(o => daysBetween(today(), o.due) <= 30);
+      document.getElementById("statCustomers").textContent = state.customers.filter(c => c.status === "active").length;
+      document.getElementById("statDue").textContent = due7.length;
+      document.getElementById("statSoon").textContent = due30.length;
+      document.getElementById("statSent").textContent = state.sent.length;
+
+      document.getElementById("dashQueue").innerHTML = tableFor(obs.slice(0, 12), true);
+      const allObs = allObligations();
+      document.getElementById("queueTableWrap").innerHTML = tableFor(allObs.slice(0, ROW_CAP), true) + capNote(Math.min(ROW_CAP, allObs.length), allObs.length, "notices");
+      document.getElementById("customerTableWrap").innerHTML = customerTable();
+      document.getElementById("sentTableWrap").innerHTML = sentTable();
+    }
+
+    function urgency(due) {
+      const d = daysBetween(today(), due);
+      if (d < 0) return `<span class="pill pill-due">Overdue ${-d}d</span>`;
+      if (d <= 7) return `<span class="pill pill-due">Due in ${d}d</span>`;
+      if (d <= 30) return `<span class="pill pill-soon">In ${d}d</span>`;
+      return `<span class="pill pill-ok">${fmt(due)}</span>`;
+    }
+    function typePill(t) {
+      if (t === "reminder") return `<span class="pill pill-soon">Reminder</span>`;
+      if (t === "extra-reminder") return `<span class="pill pill-soon">Additional reminder</span>`;
+      if (t === "cooling-off") return `<span class="pill pill-cool">Cooling-off</span>`;
+      return `<span class="pill pill-end">End of contract</span>`;
+    }
+
+    function tableFor(items, actions) {
+      if (!items.length) return `<div class="empty">Nothing waiting. Add customers or load the sample book.</div>`;
+      return `<table><thead><tr>
+        <th>Due</th><th>Type</th><th>Customer</th><th>Product</th><th>Relates to</th><th></th>
+      </tr></thead><tbody>${items.map(it => {
+        const c = customerById(it.customerId) || { name: "—", product: "—" };
+        return `<tr>
+          <td>${urgency(it.due)}<div class="muted">${fmt(it.due)}</div></td>
+          <td>${typePill(it.type)}${it.status === "sent" ? "<br><span class='pill pill-sent'>Sent</span>" : ""}</td>
+          <td>${escapeHtml(c.name)}<div class="muted">${escapeHtml(c.email || "")}</div></td>
+          <td>${escapeHtml(c.product || "")}</td>
+          <td>${fmt(it.related)}</td>
+          <td class="row-actions">${actions ? `<button type="button" class="btn btn-primary" data-open="${it.id}">Open notice</button>` : ""}</td>
+        </tr>`;
+      }).join("")}</tbody></table>`;
+    }
+
+    function customerTable() {
+      if (!state.customers.length) return `<div class="empty">No customers yet.</div>`;
+      return `<table><thead><tr>
+        <th>Customer</th><th>Product</th><th>Start</th><th>Billing</th><th>Amount</th><th>Status</th><th></th>
+      </tr></thead><tbody>${state.customers.slice(0, ROW_CAP).map(c => `<tr>
+        <td>${escapeHtml(c.name)}<div class="muted">${escapeHtml(c.email)}</div></td>
+        <td>${escapeHtml(c.product)}</td>
+        <td>${fmt(c.start)}</td>
+        <td>${escapeHtml(c.freq)}${c.trial ? `<div class="muted">trial to ${fmt(c.trial)}</div>` : ""}</td>
+        <td>${money(c.amount)}</td>
+        <td>${escapeHtml(c.status)}</td>
+        <td class="row-actions">
+          <button type="button" class="btn btn-ghost" data-edit="${c.id}">Edit</button>
+          <button type="button" class="btn btn-warn" data-cancel="${c.id}">Record cancel</button>
+        </td>
+      </tr>`).join("")}</tbody></table>` + capNote(Math.min(ROW_CAP, state.customers.length), state.customers.length, "customers");
+    }
+
+    function sentTable() {
+      if (!state.sent.length) return `<div class="empty">No notices marked as sent yet.</div>`;
+      const rows = [...state.sent].reverse().slice(0, ROW_CAP);
+      return `<table><thead><tr>
+        <th>Sent</th><th>Type</th><th>Customer</th><th>Channel</th><th>Notice id</th>
+      </tr></thead><tbody>${rows.map(s => `<tr>
+        <td>${new Date(s.at).toLocaleString("en-GB")}</td>
+        <td>${typePill(s.type)}</td>
+        <td>${escapeHtml(s.customer)}</td>
+        <td>${escapeHtml(s.channel)}</td>
+        <td class="muted">${escapeHtml(s.noticeId)}</td>
+      </tr>`).join("")}</tbody></table>` + capNote(rows.length, state.sent.length, "sent notices");
+    }
+
+    document.body.addEventListener("click", e => {
+      const open = e.target.closest("[data-open]");
+      if (open) {
+        const item = allObligations().find(o => o.id === open.dataset.open);
+        if (!item) return;
+        showNotice(item);
+      }
+      const edit = e.target.closest("[data-edit]");
+      if (edit) openCustomer(edit.dataset.edit);
+      const cancel = e.target.closest("[data-cancel]");
+      if (cancel) recordCancel(cancel.dataset.cancel);
+    });
+
+    const hints = {
+      "reminder": "Send on a durable medium (email or letter) within your stated reminder period. Keep the information in this notice more prominent than anything else in the same message.",
+      "extra-reminder": "Annual-type plan: this additional reminder goes before the main reminder (s.259(6)). The Act only says “reasonable” timing.",
+      "cooling-off": "Send on the first day of the cooling-off period, or as soon as reasonably practicable after it, and separately from other information (s.266(3)).",
+      "end": "Send in writing on a durable medium within 24 hours (online cancellation) or 3 working days (other ways), unless regulations set a different period (s.261(5))."
+    };
+    let currentNotice = null;
+    function showNotice(item) {
+      currentNotice = item;
+      const built = buildNotice(item);
+      document.getElementById("noticeTitle").textContent = built.title;
+      document.getElementById("noticeHint").textContent = (hints[item.type] || "") + " Template only: check the wording against your contract and any regulations published after " + "4 Oct 2026.";
+      document.getElementById("noticeBody").innerHTML = built.html;
+      document.getElementById("noticeModal").classList.add("open");
+    }
+    document.getElementById("closeNotice").onclick = () => document.getElementById("noticeModal").classList.remove("open");
+
+    document.getElementById("markSent").onclick = () => {
+      if (!currentNotice) return;
+      const c = customerById(currentNotice.customerId);
+      state.sent.push({
+        noticeId: currentNotice.id,
+        type: currentNotice.type,
+        customer: c ? c.name : "",
+        channel: state.biz.channel,
+        at: new Date().toISOString()
+      });
+      save(state);
+      document.getElementById("noticeModal").classList.remove("open");
+      render();
+    };
+
+    function openCustomer(id) {
+      const c = id ? customerById(id) : null;
+      if (!c && !PW.gate("customers", countForLimit(state.customers), PW.isDemo ? "customer" : "active subscriptions")) return;
+      document.getElementById("custModalTitle").textContent = c ? "Edit customer" : "Add customer";
+      document.getElementById("custId").value = c ? c.id : "";
+      document.getElementById("cName").value = c ? c.name : "";
+      document.getElementById("cEmail").value = c ? c.email : "";
+      document.getElementById("cPhone").value = c ? (c.phone || "") : "";
+      document.getElementById("cProduct").value = c ? c.product : "";
+      document.getElementById("cAddress").value = c ? (c.address || "") : "";
+      document.getElementById("cStart").value = c ? c.start : today();
+      document.getElementById("cFreq").value = c ? c.freq : "month";
+      document.getElementById("cAmount").value = c ? c.amount : "";
+      document.getElementById("cPrev").value = c && c.prev != null ? c.prev : "";
+      document.getElementById("cTrial").value = c ? (c.trial || "") : "";
+      document.getElementById("cMin").value = c ? (c.min || 0) : 0;
+      document.getElementById("cNotice").value = c ? num(c.notice, state.biz.notice) : state.biz.notice;
+      document.getElementById("cLead").value = c ? num(c.lead, state.biz.lead) : state.biz.lead;
+      document.getElementById("cStatus").value = c ? c.status : "active";
+      document.getElementById("cChannel").value = c ? c.channel : "online";
+      document.getElementById("deleteCust").style.display = c ? "inline-block" : "none";
+      document.getElementById("customerModal").classList.add("open");
+    }
+
+    document.getElementById("addCustomerBtn").onclick = () => openCustomer(null);
+    document.getElementById("addFromDash").onclick = () => openCustomer(null);
+    document.getElementById("closeCust").onclick = () => document.getElementById("customerModal").classList.remove("open");
+
+    document.getElementById("custForm").onsubmit = e => {
+      e.preventDefault();
+      const id = document.getElementById("custId").value || uid();
+      const rec = {
+        id,
+        name: document.getElementById("cName").value.trim(),
+        email: document.getElementById("cEmail").value.trim(),
+        phone: document.getElementById("cPhone").value.trim(),
+        product: document.getElementById("cProduct").value.trim(),
+        address: document.getElementById("cAddress").value.trim(),
+        start: document.getElementById("cStart").value,
+        freq: document.getElementById("cFreq").value,
+        amount: Number(document.getElementById("cAmount").value),
+        prev: document.getElementById("cPrev").value === "" ? null : Number(document.getElementById("cPrev").value),
+        trial: document.getElementById("cTrial").value || null,
+        min: Number(document.getElementById("cMin").value || 0),
+        notice: num(document.getElementById("cNotice").value, num(state.biz.notice, 0)),
+        lead: num(document.getElementById("cLead").value, num(state.biz.lead, 21)),
+        status: document.getElementById("cStatus").value,
+        channel: document.getElementById("cChannel").value
+      };
+      const i = state.customers.findIndex(x => x.id === id);
+      const others = state.customers.filter(x => x.id !== id);
+      const wasCounted = i >= 0 && (PW.isDemo || state.customers[i].status === "active");
+      const counts = PW.isDemo || rec.status === "active";
+      if (counts && !wasCounted && !PW.gate("customers", countForLimit(others), PW.isDemo ? "customer" : "active subscriptions")) return;
+      if (i >= 0) state.customers[i] = rec; else state.customers.push(rec);
+      save(state);
+      document.getElementById("customerModal").classList.remove("open");
+      render();
+    };
+
+    document.getElementById("deleteCust").onclick = () => {
+      const id = document.getElementById("custId").value;
+      if (!id || !confirm("Delete this customer?")) return;
+      state.customers = state.customers.filter(c => c.id !== id);
+      save(state);
+      document.getElementById("customerModal").classList.remove("open");
+      render();
+    };
+
+    function recordCancel(id) {
+      const c = customerById(id);
+      if (!c) return;
+      const date = prompt("Cancellation effective date (YYYY-MM-DD)", today());
+      if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
+      c.status = "cancelled";
+      c.cancelledOn = date;
+      const item = { id: "end:" + c.id + ":" + date, customerId: c.id, type: "end", due: today(), related: date, status: "upcoming" };
+      save(state);
+      showNotice(item);
+      render();
+    }
+
+    document.getElementById("saveBiz").onclick = () => {
+      state.biz = {
+        name: document.getElementById("bizName").value,
+        legal: document.getElementById("bizLegal").value,
+        address: document.getElementById("bizAddress").value,
+        email: document.getElementById("bizEmail").value,
+        phone: document.getElementById("bizPhone").value,
+        cancelUrl: document.getElementById("bizCancelUrl").value,
+        lead: num(document.getElementById("bizLead").value, 21),
+        notice: num(document.getElementById("bizNotice").value, 14),
+        extra: num(document.getElementById("bizExtra").value, 30),
+        channel: document.getElementById("bizChannel").value
+      };
+      save(state);
+      document.getElementById("bizSaved").textContent = "Saved on this device.";
+      render();
+    };
+
+    document.getElementById("clearLog").onclick = () => {
+      if (!confirm("Clear the sent log on this device?")) return;
+      state.sent = [];
+      save(state);
+      render();
+    };
+
+
+
+    /* ---- CSV import (all editions; the plan limit applies) ---- */
+    function parseCsv(text) {
+      const rows = []; let row = [], cell = "", q = false;
+      text = String(text).replace(/^\uFEFF/, "");
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (q) {
+          if (ch === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; }
+          else cell += ch;
+        } else if (ch === '"') q = true;
+        else if (ch === ",") { row.push(cell); cell = ""; }
+        else if (ch === "\n" || ch === "\r") {
+          if (ch === "\r" && text[i + 1] === "\n") i++;
+          row.push(cell); cell = ""; if (row.some(v => v.trim() !== "")) rows.push(row); row = [];
+        } else cell += ch;
+      }
+      row.push(cell); if (row.some(v => v.trim() !== "")) rows.push(row);
+      return rows;
+    }
+    function csvDate(v) {
+      v = String(v || "").trim();
+      if (!v) return null;
+      let m = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+      if (!m) { m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if (m) m = [m[0], m[3], m[2], m[1]]; }
+      if (!m) return undefined;
+      const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+      if (d.getMonth() !== Number(m[2]) - 1) return undefined;
+      return isoLocal(d);
+    }
+    function importCustomersCsv(text) {
+      const rows = parseCsv(text);
+      if (rows.length < 2) return "No rows found. The first line must be a header row (name, start, freq, amount, ...).";
+      const head = rows[0].map(h => h.trim().toLowerCase());
+      const col = name => head.indexOf(name);
+      for (const need of ["name", "start", "freq", "amount"]) if (col(need) < 0) return "Import stopped: the header row has no '" + need + "' column.";
+      const get = (r, name) => { const i = col(name); return i < 0 ? "" : String(r[i] == null ? "" : r[i]).trim(); };
+      const freqs = { week: "week", weekly: "week", month: "month", monthly: "month", quarter: "quarter", quarterly: "quarter", year: "year", yearly: "year", annual: "year", annually: "year" };
+      let added = 0, bad = 0, over = 0;
+      let count = countForLimit(state.customers);
+      const max = PW.limit("customers");
+      for (const r of rows.slice(1)) {
+        const start = csvDate(get(r, "start"));
+        const trial = csvDate(get(r, "trial"));
+        const freq = freqs[get(r, "freq").toLowerCase()];
+        const amount = Number(get(r, "amount").replace(/[£,\s]/g, ""));
+        const name = get(r, "name");
+        if (!name || !start || trial === undefined || !freq || !(amount >= 0) || get(r, "amount") === "") { bad++; continue; }
+        const statusIn = get(r, "status").toLowerCase();
+        const status = ["active", "cancelled", "paused"].includes(statusIn) ? statusIn : "active";
+        const chIn = get(r, "channel").toLowerCase();
+        const rec = {
+          id: uid(), name, email: get(r, "email"), phone: get(r, "phone"), product: get(r, "product") || "Subscription",
+          address: get(r, "address"), start, freq, amount,
+          prev: get(r, "prev") === "" ? null : Number(get(r, "prev").replace(/[£,\s]/g, "")) || null,
+          trial: trial || null, min: num(get(r, "min"), 0),
+          notice: num(get(r, "notice"), num(state.biz.notice, 0)), lead: num(get(r, "lead"), num(state.biz.lead, 21)),
+          status, channel: ["online", "phone", "in-person"].includes(chIn) ? chIn : "online"
+        };
+        const counts = PW.isDemo || status === "active";
+        if (counts && count >= max) { over++; continue; }
+        if (counts) count++;
+        state.customers.push(rec); added++;
+      }
+      save(state); render();
+      let msg = "Imported " + added + " subscription" + (added === 1 ? "" : "s") + ".";
+      if (bad) msg += " " + bad + " row" + (bad === 1 ? " was" : "s were") + " skipped because a name, start date, frequency or amount was missing or not valid.";
+      if (over) msg += " " + over + " not imported because of your plan limit (" + max + ").";
+      if (over) PW.upsell("This plan is limited to " + max + " " + (PW.isDemo ? "customers" : "active subscriptions") + ".");
+      return msg;
+    }
+    document.getElementById("importCsv").onchange = e => {
+      const f = e.target.files[0]; e.target.value = "";
+      if (!f) return;
+      if (PW.expired) { PW.gate("customers", 0, ""); return; }
+      const r = new FileReader();
+      r.onload = () => alert(importCustomersCsv(String(r.result)));
+      r.readAsText(f);
+    };
+
+    function sampleBook() {
+      const t = today();
+      const all = [
+        { id: uid(), name: "Jonah Reid", email: "jonah.reid@example.com", phone: "07700 900444", product: "Design software — monthly after 14-day trial", address: "9 Hall Lane, Glasgow G12 8QQ", start: addDays(t, -10), freq: "month", amount: 24, prev: null, trial: addDays(t, 4), min: 0, notice: 0, lead: 3, status: "active", channel: "online" },
+        { id: uid(), name: "Amira Khan", email: "amira.khan@example.com", phone: "07700 900111", product: "Studio membership — monthly", address: "21 Birch Road, Leeds LS6 2AB", start: addMonths(t, -4), freq: "month", amount: 39, prev: 29, trial: null, min: 0, notice: 14, lead: 21, status: "active", channel: "online" },
+        { id: uid(), name: "Tom Ellis", email: "tom.ellis@example.com", phone: "07700 900222", product: "Annual climbing pass", address: "4 Harbour Walk, Bristol BS1 4PQ", start: addMonths(t, -11), freq: "year", amount: 420, prev: 390, trial: null, min: 12, notice: 30, lead: 28, status: "active", channel: "in-person" },
+        { id: uid(), name: "Priya Shah", email: "priya.shah@example.com", phone: "07700 900333", product: "Recipe box — weekly", address: "18 King Street, Cambridge CB1 1LN", start: addDays(t, -20), freq: "week", amount: 34.99, prev: null, trial: addDays(t, 8), min: 0, notice: 0, lead: 5, status: "active", channel: "online" },
+        { id: uid(), name: "Helen Ward", email: "helen.ward@example.com", phone: "07700 900555", product: "Quarterly wine club", address: "2 The Green, York YO1 7HA", start: addMonths(t, -2), freq: "quarter", amount: 89, prev: 89, trial: null, min: 0, notice: 7, lead: 21, status: "active", channel: "online" }
+      ];
+      return all.slice(0, Math.min(all.length, PW.limit("customers")));
+    }
+    document.getElementById("seedBtn").onclick = () => {
+      if (state.customers.length && !confirm("Replace the current book with the sample subscribers?")) return;
+      state.customers = sampleBook();
+      state.sent = [];
+      save(state);
+      render();
+    };
+
+    PW.banner(document.querySelector("main"));
+    PW.dataPanel(document.getElementById("pwData"), {
+      get: () => state,
+      apply: data => {
+        const next = normalise(JSON.parse(JSON.stringify(data)));
+        const dropped = enforceLimit(next);
+        state = next; save(state); render();
+        return "Backup imported: " + state.customers.length + " customers." + (dropped ? " " + dropped + " were not imported because of your plan limit (" + PW.limit("customers") + ")." : "");
+      },
+      wipe: () => { localStorage.removeItem(KEY); state = load(); render(); }
+    });
+    render();
+  </script>
+</body>
+</html>
